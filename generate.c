@@ -8,16 +8,7 @@
 
 typedef float Vector[DIMENSIONS];
 
-int main() {
-    const clock_t start = clock();
-    
-    // Allocate on heap to avoid stack overflow
-    Vector *vectors = malloc(GENERATIONS * sizeof(Vector));
-    if (!vectors) {
-        fprintf(stderr, "Memory allocation failed\n");
-        return 1;
-    }
-    
+void generate(Vector vectors[GENERATIONS]) {
     srand((unsigned)time(NULL));
     
     const clock_t generation_start = clock();
@@ -30,6 +21,19 @@ int main() {
     
     printf("Generation Run: %f ms\n", 
            ((double)(generation_end - generation_start)) / CLOCKS_PER_SEC * 1000);
+}
+
+int main() {
+    const clock_t start = clock();
+    
+    // Allocate on heap to avoid stack overflow
+    Vector *vectors = malloc(GENERATIONS * sizeof(Vector));
+    if (!vectors) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return 1;
+    }
+    
+	generate(vectors);
     
     free(vectors);
     

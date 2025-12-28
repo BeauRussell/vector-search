@@ -23,6 +23,14 @@ void generate(Vector vectors[GENERATIONS]) {
            ((double)(generation_end - generation_start)) / CLOCKS_PER_SEC * 1000);
 }
 
+float calculate_dot(Vector v1, Vector v2, size_t size) {
+	float dot = 0.0f;
+	for (int i = 0; i < size; i++) {
+		dot += v1[i] * v2[i];
+	}
+	return dot;
+}
+
 int main() {
     const clock_t start = clock();
     
@@ -35,6 +43,17 @@ int main() {
     
 	generate(vectors);
     
+	clock_t start_manual_dot = clock();
+	volatile float total = 0.0f;
+
+	for (int i = 0; i < GENERATIONS - 1; i++) {
+		total += calculate_dot(vectors[i], vectors[i + 1], DIMENSIONS);
+	}
+
+    clock_t manual_dot_end = clock();
+    printf("Calculation Run: %f ms\n", 
+           ((double)(manual_dot_end - start_manual_dot)) / CLOCKS_PER_SEC * 1000);
+
     free(vectors);
     
     clock_t script_end = clock();

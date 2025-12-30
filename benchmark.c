@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>  // For memcpy
+#include <openblas/cblas.h>
 
 #define GENERATIONS 1000000
 #define DIMENSIONS 128
@@ -51,8 +52,22 @@ int main() {
 	}
 
     clock_t manual_dot_end = clock();
-    printf("Calculation Run: %f ms\n", 
+    printf("Manual Calculation Run: %f ms\n", 
            ((double)(manual_dot_end - start_manual_dot)) / CLOCKS_PER_SEC * 1000);
+
+
+	clock_t start_openblas_dot = clock();
+	total = 0.0f;
+
+	for (int i = 0; i < GENERATIONS - 1; i++) {
+		const int incx = 1;
+		const int incy = 1;
+		total += cblas_sdot(DIMENSIONS, vectors[i], incx, vectors[i + 1], incy);
+	}
+
+    clock_t end_openblas_dot = clock();
+    printf("OpenBLAS Calculation Run: %f ms\n", 
+           ((double)(end_openblas_dot - start_openblas_dot)) / CLOCKS_PER_SEC * 1000);
 
     free(vectors);
     
